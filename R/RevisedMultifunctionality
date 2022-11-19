@@ -174,12 +174,14 @@ AllCombSESMatrix<‐AllCombSESMatrix %>% mutate(UniqCombID = group_indices(., nF
 combID)) #Assign unique id
 fwrite(AllCombSESMatrix, "ResSpImporSES.csv")
 AllCombSESMatrix<‐fread("ResSpImporSES.csv")
+
 #### Show results for all individual combinations and means of each species at a given number of
 functions ####
 ResSum<‐AllCombSESMatrix %>%
 group_by(nFunc, thresholds, Species) %>%
 dplyr::summarise(mean(SESDiffMt))
 colnames(ResSum)<‐c("nFunc", "thresholds", "Species", "SES")
+
 fig.1<‐ggplot() +
 geom_boxplot(data=AllCombSESMatrix, aes(y=SESDiffMt, x=thresholds*100, group=thresholds),
 col="light grey") +
@@ -188,8 +190,10 @@ geom_hline(yintercept=c(‐1.96,1.96), linetype="dashed") +
 xlab("Threshold (%)") + ylab("Standardized effect size (SES)") +
 facet_wrap(~nFunc,ncol=length(UsedVars)‐1) +
 theme_bw(base_size=14)
+
 windows()
 fig.1
+
 SumSig<‐ResSum %>% dplyr::filter(SES>=1.96) %>%
 group_by(nFunc, thresholds) %>% dplyr::summarise(n()) %>% data.frame()
 colnames(SumSig)<‐c("nFunc", "thresholds", "no.spp")
@@ -199,6 +203,7 @@ group_by(nFunc, thresholds) %>% dplyr::summarise(n()*‐1) %>% data.frame()
 colnames(SumNonSig)<‐c("nFunc", "thresholds", "no.spp")
 SumNonSig$direction<‐c("negative")
 ResSumSig<‐bind_rows(SumSig, SumNonSig)
+
 fig.2<‐ggplot() +
 geom_area(data=filter(ResSumSig, direction=="positive"), aes(x=thresholds*100, y=no.spp,
 group=‐nFunc, fill=nFunc), col="white") +
@@ -207,6 +212,7 @@ group=‐nFunc, fill=nFunc), col="white") +
 xlim(0,100) +
 scale_fill_gradientn(colours = cols1[2:5]) +
 xlab("Threshold (%)") + ylab("Number of species")
+
 windows()
 fig.2
 
@@ -271,6 +277,7 @@ considered ####
 ResSum2<‐AllCombFitLinearSlopes %>% group_by(nFunc, thresholds) %>%
 dplyr::summarise(mean(estimate))
 colnames(ResSum2)<‐c("nFunc", "thresholds", "estimate")
+
 ## Y‐axis converted to proportional changes (%) ##
 fig.3<‐ggplot() +
 geom_smooth(data=AllCombFitLinearSlopes,
@@ -283,6 +290,7 @@ size=1) +
 ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
 facet_wrap(~nFunc,ncol=length(UsedVars)‐1) +
 theme_bw(base_size=14)
+
 windows()
 fig.3
 
@@ -336,8 +344,10 @@ scale_color_manual(values=cols2[3:9]) +
 ylab(expression("Number of functions >= Threshold")) + xlab("Species richness") +
 facet_wrap(.~percent, ncol=9) +
 theme_bw(base_size=14)
+
 windows()
 fig.4a
+
 ## Y‐axis converted to proporetional changes (%) ##
 fig.4d<‐ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
 geom_ribbon(fill="light blue", alpha=0.5, aes(x=thresholds*100, ymin=100*conf.low,
@@ -346,6 +356,7 @@ geom_point(aes(x=thresholds*100, y=100*estimate)) +
 geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
 ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
 theme_bw(base_size=14)
+
 windows()
 fig.4d
 
@@ -370,6 +381,7 @@ maxN=length(UsedVars))
 StandSlopes<‐getCoefTab(sesFuncMaxed~Diversity, data=StandFit, coefVar="Diversity", fun=lm)
 fwrite(StandSlopes, "StandSlopes.csv")
 StandSlopes<‐fread("StandSlopes.csv")
+
 fig.5a.inset<‐ggplot(StandSlopes, aes(x=thresholds)) +
 geom_ribbon(aes(x=thresholds*100, ymin=estimate‐1.96*.data[["std.error"]],
 ymax=estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
@@ -379,8 +391,10 @@ geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$estimate==max(StandSlop
 e)]*100, linetype="dashed") +
 ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
 theme_bw(base_size=14)
+
 windows()
 fig.5a.inset
+
 StandFit$percent<‐100*StandFit$thresholds
 dplyr::inner_join(StandFit, StandSlopes, by="thresholds") ‐> StandFit2
 StandFit2$significnace<‐StandFit2[,"p.value"]<=0.05
@@ -390,6 +404,7 @@ scale_color_gradientn(name="Percent of ¥nMaximum", colours=cols3) +
 scale_linetype_manual(values=c("dotted", "solid")) +
 ylab(expression("Standardized effect size (SES)")) + xlab("Species richness") +
 theme_bw(base_size=14)
+
 windows()
 fig.5a
 
