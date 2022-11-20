@@ -175,8 +175,7 @@ combID)) #Assign unique id
 fwrite(AllCombSESMatrix, "ResSpImporSES.csv")
 AllCombSESMatrix<‐fread("ResSpImporSES.csv")
 
-#### Show results for all individual combinations and means of each species at a given number of
-functions ####
+#### Show results for all individual combinations and means of each species at a given number of functions ####
 ResSum<‐AllCombSESMatrix %>%
 group_by(nFunc, thresholds, Species) %>%
 dplyr::summarise(mean(SESDiffMt))
