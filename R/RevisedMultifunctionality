@@ -367,19 +367,18 @@ fwrite(StandSlopes, "StandSlopes.csv")
 StandSlopes<-fread("StandSlopes.csv")
 
 fig.5a.inset<-ggplot(StandSlopes, aes(x=thresholds)) +
-  geom_ribbon(aes(x=thresholds*100, ymin=Estimate-1.96*.data[["std.error"]],
-                  ymax=Estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
+  geom_ribbon(aes(x=thresholds*100, ymin=Estimate-1.96*.data[["Std. Error"]],
+                  ymax=Estimate+1.96*.data[["Std. Error"]]), fill="light grey", alpha=0.5)+
   geom_point(aes(x=thresholds*100, y=Estimate)) +
   geom_hline(yintercept=0, lwd=1) +
-  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$Estimate==max(StandSlopes$estimat
-                                                                         e)]*100, linetype="dashed") +
+  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$Estimate==max(StandSlopes$Estimate)]*100, linetype="dashed") +
   ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
 fig.5a.inset
 
 StandFit$percent<-100*StandFit$thresholds
 dplyr::inner_join(StandFit, StandSlopes, by="thresholds") -> StandFit2
-StandFit2$significnace<-StandFit2[,"p.value"]<=0.05
+StandFit2$significnace<-StandFit2[,"Pr(>|t|)"]<=0.05
 fig.5a<-ggplot(data=StandFit2, aes(x=Diversity, y=sesFuncMaxed, group=percent)) +
   stat_smooth(method="lm", lwd=0.5, fill=NA, aes(color=percent, linetype=significnace)) +
   scale_color_gradientn(name="Percent of ¥nMaximum", colours=cols3) +
