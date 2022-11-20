@@ -339,7 +339,7 @@ fig.4a
 fig.4d<-ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
   geom_ribbon(fill="light blue", alpha=0.5, aes(x=thresholds*100, ymin=100*conf.low,
                                                 ymax=100*conf.high)) +
-  geom_point(aes(x=thresholds*100, y=100*Estimate)) +
+  geom_point(aes(x=thresholds*100, y=100*estimate)) +
   geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
   ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
