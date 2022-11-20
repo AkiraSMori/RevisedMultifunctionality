@@ -267,8 +267,7 @@ AllCombSESMatrix<‐fread("AllCombFitLinearSlopes.csv")
 fwrite(AllCombFitThresh, "AllCombFitThresh.csv")
 AllCombFitThresh<‐fread("AllCombFitThresh.csv")
 
-#### Show results for all individual combinations and means at a given toal number of functions
-considered ####
+#### Show results for all individual combinations and means at a given toal number of functions considered ####
 ResSum2<‐AllCombFitLinearSlopes %>% group_by(nFunc, thresholds) %>%
 dplyr::summarise(mean(estimate))
 colnames(ResSum2)<‐c("nFunc", "thresholds", "estimate")
@@ -287,8 +286,7 @@ facet_wrap(~nFunc,ncol=length(UsedVars)‐1) +
 theme_bw(base_size=14)
 fig.3
 
-#### Get common estimates by accounting for differences in total number of functions (offset
-slopes; Fig. 4) ####
+#### Get common estimates by accounting for differences in total number of functions (offset slopes; Fig. 4) ####
 AllCombFitThresh$UniqCombID<‐as.factor(AllCombFitThresh$UniqCombID)
 PlotX<‐data.frame(
 Diversity=rep(seq(1, max(Dat$Diversity),length=max(Dat$Diversity)), 4),
