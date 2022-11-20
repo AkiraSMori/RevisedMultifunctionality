@@ -189,8 +189,6 @@ geom_hline(yintercept=c(‐1.96,1.96), linetype="dashed") +
 xlab("Threshold (%)") + ylab("Standardized effect size (SES)") +
 facet_wrap(~nFunc,ncol=length(UsedVars)‐1) +
 theme_bw(base_size=14)
-
-windows()
 fig.1
 
 SumSig<‐ResSum %>% dplyr::filter(SES>=1.96) %>%
@@ -211,8 +209,6 @@ group=‐nFunc, fill=nFunc), col="white") +
 xlim(0,100) +
 scale_fill_gradientn(colours = cols1[2:5]) +
 xlab("Threshold (%)") + ylab("Number of species")
-
-windows()
 fig.2
 
 #####################################
@@ -289,8 +285,6 @@ size=1) +
 ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
 facet_wrap(~nFunc,ncol=length(UsedVars)‐1) +
 theme_bw(base_size=14)
-
-windows()
 fig.3
 
 #### Get common estimates by accounting for differences in total number of functions (offset
@@ -343,8 +337,6 @@ scale_color_manual(values=cols2[3:9]) +
 ylab(expression("Number of functions >= Threshold")) + xlab("Species richness") +
 facet_wrap(.~percent, ncol=9) +
 theme_bw(base_size=14)
-
-windows()
 fig.4a
 
 ## Y‐axis converted to proporetional changes (%) ##
@@ -355,8 +347,6 @@ geom_point(aes(x=thresholds*100, y=100*estimate)) +
 geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
 ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
 theme_bw(base_size=14)
-
-windows()
 fig.4d
 
 ##################################
@@ -390,8 +380,6 @@ geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$estimate==max(StandSlop
 e)]*100, linetype="dashed") +
 ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
 theme_bw(base_size=14)
-
-windows()
 fig.5a.inset
 
 StandFit$percent<‐100*StandFit$thresholds
@@ -403,8 +391,6 @@ scale_color_gradientn(name="Percent of ¥nMaximum", colours=cols3) +
 scale_linetype_manual(values=c("dotted", "solid")) +
 ylab(expression("Standardized effect size (SES)")) + xlab("Species richness") +
 theme_bw(base_size=14)
-
-windows()
 fig.5a
 
 #######################################
