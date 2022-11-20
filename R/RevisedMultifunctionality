@@ -269,17 +269,16 @@ AllCombFitThresh<-fread("AllCombFitThresh.csv")
 
 #### Show results for all individual combinations and means at a given toal number of functions considered ####
 ResSum2<-AllCombFitLinearSlopes %>% group_by(nFunc, thresholds) %>%
-  dplyr::summarise(mean(estimate))
-colnames(ResSum2)<-c("nFunc", "thresholds", "estimate")
+  dplyr::summarise(mean(Estimate))
+colnames(ResSum2)<-c("nFunc", "thresholds", "Estimate")
 
 ## Y-axis converted to proportional changes (%) ##
 fig.3<-ggplot() +
   geom_smooth(data=AllCombFitLinearSlopes,
-              aes(x=thresholds*100, y=100*estimate, group=combID), se=FALSE, col="light
-grey", size=0.5) +
+              aes(x=thresholds*100, y=100*Estimate, group=combID), se=FALSE, col="light grey", size=0.5) +
   geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
   geom_smooth(data=ResSum2,
-              aes(x=thresholds*100, y=100*estimate, group=nFunc), se=FALSE, col="dark blue",
+              aes(x=thresholds*100, y=100*Estimate, group=nFunc), se=FALSE, col="dark blue",
               size=1) +
   ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
   facet_wrap(~nFunc,ncol=length(UsedVars)-1) +
@@ -314,8 +313,8 @@ for(i in threshmin:threshmax) {
   }
   names(AllCombOffsetFit)<-names(TempRes)
   AllCombOffsetFit<-dplyr::bind_rows(AllCombOffsetFit, TempRes)
-  #"PredY" is neccesary to show different slopes for each number of functions; Fig. 4a).#
-  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on "mod.offset") is not required.#
+  #"PredY" is neccesary to show different slopes for each number of functions; Fig. 4a).
+  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on   "mod.offset") is not required.
 }
 AllCombOffsetSlopes<-dplyr::filter(AllCombOffsetSlopes, !is.na(thresholds))
 AllCombOffsetFit<-dplyr::filter(AllCombOffsetFit, !is.na(thresholds))
@@ -340,7 +339,7 @@ fig.4a
 fig.4d<-ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
   geom_ribbon(fill="light blue", alpha=0.5, aes(x=thresholds*100, ymin=100*conf.low,
                                                 ymax=100*conf.high)) +
-  geom_point(aes(x=thresholds*100, y=100*estimate)) +
+  geom_point(aes(x=thresholds*100, y=100*Estimate)) +
   geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
   ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
@@ -353,7 +352,7 @@ fig.4d
 #######################################
 DatThresh<-getFuncsMaxed(Dat, UsedVars, threshmin=0.05, threshmax=0.95,
                          prepend=c("plot","Diversity"), maxN=length(UsedVars))
-gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a string comparison operator#
+gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a string comparison operator
 gcPlot$percent<-paste(100*gcPlot$thresholds, "%", sep="")
 qplot(Diversity, funcMaxed, data=gcPlot, facets=~percent, geom="jitter") +
   stat_smooth(method="glm", method.args=list(family=quasipoisson(link="identity")),
@@ -368,11 +367,11 @@ fwrite(StandSlopes, "StandSlopes.csv")
 StandSlopes<-fread("StandSlopes.csv")
 
 fig.5a.inset<-ggplot(StandSlopes, aes(x=thresholds)) +
-  geom_ribbon(aes(x=thresholds*100, ymin=estimate-1.96*.data[["std.error"]],
-                  ymax=estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
-  geom_point(aes(x=thresholds*100, y=estimate)) +
+  geom_ribbon(aes(x=thresholds*100, ymin=Estimate-1.96*.data[["std.error"]],
+                  ymax=Estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
+  geom_point(aes(x=thresholds*100, y=Estimate)) +
   geom_hline(yintercept=0, lwd=1) +
-  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$estimate==max(StandSlopes$estimat
+  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$Estimate==max(StandSlopes$estimat
                                                                          e)]*100, linetype="dashed") +
   ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
