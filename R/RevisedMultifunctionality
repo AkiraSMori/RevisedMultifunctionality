@@ -243,9 +243,9 @@ for (k in 2:length(UsedVars))
                                         data=FitThreshTemp,
                                         groupVar="thresholds", coefVar="Diversity",
                                         fun=glm, family="poisson"), silent=F)
-    #offset: This allows some observations for functions are missing.
-    #The offset term is not neccesary for the Germany data because no function data is lacking.
-    #The function "getCoefTab" can be thus used.
+    #offset: This allows some observations for functions are missing.#
+    #The offset term is not neccesary for the Germany data because no function data is lacking.#
+    #The function "getCoefTab" can be thus used.#
     ifelse(class(SampFitLinearSlopes)=="try-error", SampFitLinearSlopes,
            SampFitLinearSlopes[,c("combID", "nFunc")]<-cbind.data.frame(l,k))
     FitThreshTemp <- FitThreshTemp %>%
@@ -314,8 +314,8 @@ for(i in threshmin:threshmax) {
   }
   names(AllCombOffsetFit)<-names(TempRes)
   AllCombOffsetFit<-dplyr::bind_rows(AllCombOffsetFit, TempRes)
-  #"PredY" is neccesary to show different slopes for each number of functions; Fig. 4a).
-  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on   "mod.offset") is not required.
+  #"PredY" is neccesary to show different slopes for each number of functions; Fig. 4a).#
+  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on "mod.offset") is not required.#
 }
 AllCombOffsetSlopes<-dplyr::filter(AllCombOffsetSlopes, !is.na(thresholds))
 AllCombOffsetFit<-dplyr::filter(AllCombOffsetFit, !is.na(thresholds))
@@ -353,7 +353,7 @@ fig.4d
 #######################################
 DatThresh<-getFuncsMaxed(Dat, UsedVars, threshmin=0.05, threshmax=0.95,
                          prepend=c("plot","Diversity"), maxN=length(UsedVars))
-gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a string comparison operator
+gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a string comparison operator#
 gcPlot$percent<-paste(100*gcPlot$thresholds, "%", sep="")
 qplot(Diversity, funcMaxed, data=gcPlot, facets=~percent, geom="jitter") +
   stat_smooth(method="glm", method.args=list(family=quasipoisson(link="identity")),
