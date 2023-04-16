@@ -168,8 +168,7 @@ AllCombSESMatrix<-AllCombSESMatrix %>% mutate(UniqCombID = group_indices(., nFun
                                                                          combID)) #Assign unique id
 fwrite(AllCombSESMatrix, "ResSpImporSES.csv")
 AllCombSESMatrix<-fread("ResSpImporSES.csv")
-#### Show results for all individual combinations and means of each species at a given number of
-functions ####
+#### Show results for all individual combinations and means of each species at a given number of functions ####
 ResSum<-AllCombSESMatrix %>%
   group_by(nFunc, thresholds, Species) %>%
   dplyr::summarise(mean(SESDiffMt))
@@ -258,8 +257,7 @@ fwrite(AllCombFitLinearSlopes, "AllCombFitLinearSlopes.csv")
 AllCombSESMatrix<-fread("AllCombFitLinearSlopes.csv")
 fwrite(AllCombFitThresh, "AllCombFitThresh.csv")
 AllCombFitThresh<-fread("AllCombFitThresh.csv")
-#### Show results for all individual combinations and means at a given toal number of functions
-considered ####
+#### Show results for all individual combinations and means at a given toal number of functions considered ####
 ResSum2<-AllCombFitLinearSlopes %>% group_by(nFunc, thresholds) %>%
   dplyr::summarise(mean(estimate))
 colnames(ResSum2)<-c("nFunc", "thresholds", "estimate")
@@ -277,8 +275,7 @@ grey", size=0.5) +
   theme_bw(base_size=14)
 windows()
 fig.3
-#### Get common estimates by accounting for differences in total number of functions (offset
-slopes; Fig. 4) ####
+#### Get common estimates by accounting for differences in total number of functions (offset slopes; Fig. 4) ####
 AllCombFitThresh$UniqCombID<-as.factor(AllCombFitThresh$UniqCombID)
 PlotX<-data.frame(
   Diversity=rep(seq(1, max(Dat$Diversity),length=max(Dat$Diversity)), 4),
@@ -307,8 +304,7 @@ for(i in threshmin:threshmax) {
   names(AllCombOffsetFit)<-names(TempRes)
   AllCombOffsetFit<-dplyr::bind_rows(AllCombOffsetFit, TempRes)
   #"PredY" is neccesary to show different slopes for each number of functions; Fig. 4a).
-  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on
-  "mod.offset") is not required.
+  #Function "getCoefTab2 (for glmmTMB)" can be used if "PredY" (estimated based on "mod.offset") is not required.
 }
 AllCombOffsetSlopes<-dplyr::filter(AllCombOffsetSlopes, !is.na(thresholds))
 AllCombOffsetFit<-dplyr::filter(AllCombOffsetFit, !is.na(thresholds))
@@ -346,8 +342,7 @@ fig.4d
 #######################################
 DatThresh<-getFuncsMaxed(Dat, UsedVars, threshmin=0.05, threshmax=0.95,
                          prepend=c("plot","Diversity"), maxN=length(UsedVars))
-gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a
-string comparison operator
+gcPlot<-subset(DatThresh, DatThresh$thresholds %in% qw(0.25, 0.5, 0.75)) #Using qw as %in% is a string comparison operator
 gcPlot$percent<-paste(100*gcPlot$thresholds, "%", sep="")
 qplot(Diversity, funcMaxed, data=gcPlot, facets=~percent, geom="jitter") +
   stat_smooth(method="glm", method.args=list(family=quasipoisson(link="identity")),
@@ -365,8 +360,7 @@ fig.5a.inset<-ggplot(StandSlopes, aes(x=thresholds)) +
                   ymax=estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
   geom_point(aes(x=thresholds*100, y=estimate)) +
   geom_hline(yintercept=0, lwd=1) +
-  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$estimate==max(StandSlopes$estimat
-                                                                         e)]*100, linetype="dashed") +
+  geom_vline(xintercept=StandSlopes$thresholds[StandSlopes$estimate==max(StandSlopes$estimate)]*100, linetype="dashed") +
   ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
 windows()
