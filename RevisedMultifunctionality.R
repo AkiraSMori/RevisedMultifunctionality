@@ -251,7 +251,7 @@ for (k in 2:length(UsedVars))
 }
 AllCombFitLinearSlopes<-dplyr::filter(AllCombFitLinearSlopes, !is.na(thresholds))
 AllCombFitThresh<-dplyr::filter(AllCombFitThresh, !is.na(thresholds))
-AllCombFitThresh<-AllCombFitThresh %>% mutate(UniqCombID = group_indices(., nFunc, combID))
+AllCombFitThresh<-AllCombFitThresh %>% mutate(UniqCombID = group_by(., nFunc, combID))
 #Assign unique id
 fwrite(AllCombFitLinearSlopes, "AllCombFitLinearSlopes.csv")
 AllCombSESMatrix<-fread("AllCombFitLinearSlopes.csv")
@@ -264,8 +264,7 @@ colnames(ResSum2)<-c("nFunc", "thresholds", "estimate")
 ## Y-axis converted to proportional changes (%) ##
 fig.3<-ggplot() +
   geom_smooth(data=AllCombFitLinearSlopes,
-              aes(x=thresholds*100, y=100*estimate, group=combID), se=FALSE, col="light
-grey", size=0.5) +
+              aes(x=thresholds*100, y=100*estimate, group=combID), se=FALSE, col="light grey", size=0.5) +
   geom_abline(intercept=0, slope=0, lwd=0.5, linetype=2) +
   geom_smooth(data=ResSum2,
               aes(x=thresholds*100, y=100*estimate, group=nFunc), se=FALSE, col="dark blue",
