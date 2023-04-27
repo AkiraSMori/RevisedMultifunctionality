@@ -9,6 +9,7 @@ cols3<-rev(brewer.pal(10, "Spectral"))
 #####################################
 #### Modifications for functions ####
 #####################################
+
 getFuncMaxed <- function (adf, vars=NA, thresh=0.05, proportion=F, prepend="Diversity", maxN=1)
 {
   if(is.na(vars)[1])
