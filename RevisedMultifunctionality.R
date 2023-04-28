@@ -256,8 +256,8 @@ for (k in 2:length(UsedVars))
            SampFitLinearSlopes[,c("combID", "nFunc")] <- cbind.data.frame(l,k))
     FitThreshTemp <- FitThreshTemp %>%
       select(thresholds, plot, Diversity, funcMaxed, nFunc)
-    FitThreshTemp$combID <-l
-    names(AllCombFitThresh) <-names(FitThreshTemp)
+    FitThreshTemp$combID <- l
+    names(AllCombFitThresh) <- names(FitThreshTemp)
     AllCombFitThresh <- dplyr::bind_rows(AllCombFitThresh, FitThreshTemp)
     CombFitLinearSlopes <- rbind(CombFitLinearSlopes, SampFitLinearSlopes)
   }
@@ -266,8 +266,10 @@ for (k in 2:length(UsedVars))
 }
 AllCombFitLinearSlopes <- dplyr::filter(AllCombFitLinearSlopes, !is.na(thresholds))
 AllCombFitThresh <- dplyr::filter(AllCombFitThresh, !is.na(thresholds))
-AllCombFitThresh <- AllCombFitThresh %>% mutate(UniqCombID = group_by(., nFunc, combID))
-#Assign unique id
+AllCombFitThresh <- AllCombFitThresh %>% group_by(nFunc, combID) %>% 
+                                          mutate(UniqCombID = group_indices()) %>% 
+                                          ungroup()
+
 fwrite(AllCombFitLinearSlopes, "AllCombFitLinearSlopes.csv")
 AllCombSESMatrix <- fread("AllCombFitLinearSlopes.csv")
 fwrite(AllCombFitThresh, "AllCombFitThresh.csv")
@@ -336,17 +338,17 @@ AllCombOffsetFitSubset <- AllCombOffsetFit %>%
                   thresholds==0.5|thresholds==0.6|thresholds==0.7|thresholds==0.8|thresholds==0.9)
 AllCombOffsetFitSubset$percent <- paste(100*AllCombOffsetFitSubset$thresholds, "%", sep="")
 
-fig.4a <- ggplot(AllCombOffsetFitSubset,aes(x=Diversity, y=PredY)) +
+fig.4.1 <- ggplot(AllCombOffsetFitSubset,aes(x=Diversity, y=PredY)) +
   geom_line(aes(color=as.factor(nFunc)), size=0.5) +
   scale_color_manual(values=cols2[3:9]) +
   ylab(expression("Number of functions >= Threshold")) + xlab("Species richness") +
   facet_wrap(.~percent, ncol=9) +
   theme_bw(base_size=14)
 windows()
-fig.4a
+fig.4.1
 
 ## Y-axis converted to proporetional changes (%) ##
-fig.4d <- ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
+fig.4.2 <- ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
   geom_ribbon(fill="light blue", alpha=0.5, aes(x=thresholds*100, ymin=100*conf.low,
                                                 ymax=100*conf.high)) +
   geom_point(aes(x=thresholds*100, y=100*estimate)) +
@@ -354,7 +356,7 @@ fig.4d <- ggplot(AllCombOffsetSlopes, aes(x=thresholds)) +
   ylab("Change in number of functions per addition of 1 species (%)") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
 windows()
-fig.4d
+fig.4.2
 ##################################
 ##################################
 
@@ -378,7 +380,7 @@ StandSlopes <- getCoefTab(sesFuncMaxed~Diversity, data=StandFit, coefVar="Divers
 fwrite(StandSlopes, "StandSlopes.csv")
 StandSlopes <- fread("StandSlopes.csv")
 
-fig.5a.inset <- ggplot(StandSlopes, aes(x=thresholds)) +
+fig.5.inset <- ggplot(StandSlopes, aes(x=thresholds)) +
   geom_ribbon(aes(x=thresholds*100, ymin=estimate-1.96*.data[["std.error"]],
                   ymax=estimate+1.96*.data[["std.error"]]), fill="light grey", alpha=0.5)+
   geom_point(aes(x=thresholds*100, y=estimate)) +
@@ -387,19 +389,19 @@ fig.5a.inset <- ggplot(StandSlopes, aes(x=thresholds)) +
   ylab("Change in Standardized effect size (SES) for increase of 1 species") + xlab("Threshold (%)") +
   theme_bw(base_size=14)
 windows()
-fig.5a.inset
+fig.5.inset
 
 StandFit$percent <- 100*StandFit$thresholds
 StandFit2 <- dplyr::inner_join(StandFit, StandSlopes, by="thresholds")
 StandFit2$significnace <- StandFit2[,"p.value"]<=0.05
 
-fig.5a <- ggplot(data=StandFit2, aes(x=Diversity, y=sesFuncMaxed, group=percent)) +
+fig.5 <- ggplot(data=StandFit2, aes(x=Diversity, y=sesFuncMaxed, group=percent)) +
   stat_smooth(method="lm", lwd=0.5, fill=NA, aes(color=percent, linetype=significnace)) +
   scale_color_gradientn(name="Percent of ¥nMaximum", colours=cols3) +
   scale_linetype_manual(values=c("dotted", "solid")) +
   ylab(expression("Standardized effect size (SES)")) + xlab("Species richness") +
   theme_bw(base_size=14)
 windows()
-fig.5a
+fig.5
 #######################################
 #######################################
