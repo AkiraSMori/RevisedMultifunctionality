@@ -1,4 +1,5 @@
 #### Results are stored as CSV files ####
+
 essentials <- c("tidyverse", "reshape2", "broom.mixed", "data.table", "multifunc", "glmmTMB", "effects", "picante", "vegan", "RColorBrewer")
 lapply(essentials, require, character.only=TRUE)
 
